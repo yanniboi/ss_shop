@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Soul Survivor Shop</string>
+    <string name="no_login">You need to login in order to see your talks...</string>
+    <string name="hello_world">Welcome to the Shop on your mobile!</string>
+    <string name="action_settings">Settings</string>
+
+</resources>
