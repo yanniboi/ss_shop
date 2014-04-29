@@ -33,11 +33,11 @@ public class SimpleArrayAdapter extends ArrayAdapter<Talks.Talk> {
         firstTextView.setText(talks[position].firstValue);
         secondTextView.setText(talks[position].secondValue);
         // change the icon for Windows and iPhone
-        String s = talks[position].firstValue;
-        if (s.startsWith("iPhone")) {
-            imageView.setImageResource(R.drawable.no);
-        } else {
+        Boolean downloaded = talks[position].downloadValue;
+        if (downloaded) {
             imageView.setImageResource(R.drawable.ok);
+        } else {
+            imageView.setImageResource(R.drawable.no);
         }
 
         return rowView;

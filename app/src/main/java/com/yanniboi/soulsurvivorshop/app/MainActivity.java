@@ -26,7 +26,7 @@ import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
 
-    public Talks.Talk[] talks;
+    private Talks.Talk[] talks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +76,8 @@ public class MainActivity extends ActionBarActivity {
         
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        updateMenuTitles(menu);
+
         return true;
     }
 
@@ -93,11 +95,20 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void updateMenuTitles(Menu menu) {
+        MenuItem settings_login = menu.findItem(R.id.action_settings);
+        if (checkLogin()) {
+            settings_login.setTitle(R.string.action_logout);
+        } else {
+            settings_login.setTitle(R.string.action_login);
+        }
+    }
+
     /**
      * Checks whether user is loggen in.
      */
     public boolean checkLogin() {
-        SharedPreferences prefsLogin = getSharedPreferences("LOGIN", 0);
+        SharedPreferences prefsLogin = getSharedPreferences("PREFS_LOGIN", 0);
         return prefsLogin.getBoolean("auth", false);
     }
 
