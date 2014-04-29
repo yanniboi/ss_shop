@@ -18,8 +18,9 @@
         </activity>
         <activity
             android:name="com.yanniboi.soulsurvivorshop.app.TalkActivity"
-            android:label="@string/app_name" >
-
+            android:screenOrientation="portrait"
+            android:parentActivityName="com.yanniboi.soulsurvivorshop.app.MainActivity" >
+        android:label="@string/app_name" >
             <service
                 android:name="com.yanniboi.soulsurvivorshop.app.MyAudioService"
                 android:enabled="true"
@@ -31,8 +32,15 @@
             android:label="@string/title_activity_login"
             android:windowSoftInputMode="adjustResize|stateVisible" >
         </activity>
-
-
+        <activity
+            android:name="com.yanniboi.soulsurvivorshop.app.TalkPlayerActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_activity_talk_player"
+            android:parentActivityName="com.yanniboi.soulsurvivorshop.app.TalkActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="TalkActivity" />
+        </activity>
     </application>
     <!-- To access Google+ APIs: -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -41,5 +49,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
 </manifest>

@@ -43,7 +43,7 @@ public class MainActivity extends ActionBarActivity {
         ListView listview = (ListView) findViewById(R.id.list);
         TextView nologin = (TextView) findViewById(R.id.fragment_no_login);
 
-        talks = new Talks().getTalks();
+        talks = new Talks().getTalks(getApplication());
 
         final SimpleArrayAdapter adapter = new SimpleArrayAdapter(this, talks);
         listview.setAdapter(adapter);
@@ -56,6 +56,9 @@ public class MainActivity extends ActionBarActivity {
 
                 i.putExtra("first", talks[position].firstValue);
                 i.putExtra("second", talks[position].secondValue);
+                i.putExtra("id", talks[position].talkId);
+                i.putExtra("downloaded", talks[position].downloadValue);
+
                 startActivity(i);
             }
 

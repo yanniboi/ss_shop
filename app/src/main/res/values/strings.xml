@@ -8,8 +8,8 @@
     <string name="action_login">Login</string>
     <string name="action_logout">Logout</string>
     <string name="action_download">Download</string>
-
     <string name="email_sign_out_text">You are already signed in.</string>
     <string name="play_talk">Listen</string>
+    <string name="title_activity_talk_player">TalkPlayerActivity</string>
 
 </resources>

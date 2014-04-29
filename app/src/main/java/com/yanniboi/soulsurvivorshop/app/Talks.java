@@ -1,12 +1,17 @@
 package com.yanniboi.soulsurvivorshop.app;
 
-/**
- * Created by yan on 28/04/14.
- */
+import android.content.Context;
+import android.os.Environment;
+
+import java.io.File;
+import java.io.FilenameFilter;
+
 public class Talks {
+    private static Context context;
     private String[] firstValues;
     private String[] secondValues;
     private Boolean[] downloadValues;
+    private String[] talkIds;
 
     public Talks() {
 
@@ -21,17 +26,19 @@ public class Talks {
                         " \n" +
                         "Mike Pilavachi: The call to Christ" };
 
-        this.downloadValues = new Boolean[] { true, true, false };
+        this.downloadValues = new Boolean[] { false, false, false };
 
+        this.talkIds = new String[] { "33101", "03101", "05101" };
 
     }
 
-    public Talk[] getTalks() {
+    public Talk[] getTalks(Context context) {
+        this.context = context;
         int length = firstValues.length;
         Talk[] talks = new Talk[length];
 
         for (int i = 0; i < length; i++) {
-            talks[i] = new Talk(firstValues[i], secondValues[i], downloadValues[i]);
+            talks[i] = new Talk(firstValues[i], secondValues[i], talkIds[i]);
         }
 
         return talks;
@@ -41,11 +48,35 @@ public class Talks {
         public String firstValue;
         public String secondValue;
         public Boolean downloadValue;
+        public String talkId;
 
-        public Talk(String firstValue, String secondValue, Boolean downloadValue) {
+        public Talk(String firstValue, String secondValue, String talkId) {
             this.firstValue = firstValue;
             this.secondValue = secondValue;
-            this.downloadValue = downloadValue;
+            this.talkId = talkId;
+            this.downloadValue = checkDownload(Talks.context);
+        }
+
+        public Boolean checkDownload(Context context) {
+            File home = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+
+
+            FilenameFilter textFilter = new FilenameFilter() {
+                public boolean accept(File dir, String name) {
+                    if (name.startsWith(talkId)) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            };
+
+            File[] files = new File[0];
+            if (home != null) {
+                files = home.listFiles(textFilter);
+            }
+            return files.length > 0;
+
         }
     }
 
