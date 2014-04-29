@@ -96,8 +96,8 @@
         android:layout_above="@id/player_footer_bg"
         android:thumb="@drawable/seek_handler"
         android:progressDrawable="@drawable/seekbar_progress"
-        android:paddingLeft="6dp"
-        android:paddingRight="6dp"/>
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"/>
 
     <!-- Timer Display -->
     <LinearLayout

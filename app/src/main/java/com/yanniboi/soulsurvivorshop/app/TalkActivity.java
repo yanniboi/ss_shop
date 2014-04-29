@@ -1,5 +1,8 @@
 package com.yanniboi.soulsurvivorshop.app;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -62,6 +65,7 @@ public class TalkActivity extends ActionBarActivity {
                 i.putExtra("id", talkId);
                 //i.putExtra("second", talks[position].secondValue);
                 startActivity(i);
+                sendNotification();
             }
         });
 
@@ -246,5 +250,34 @@ public class TalkActivity extends ActionBarActivity {
                 Toast.makeText(context, "Download error...", Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+
+    public void sendNotification() {
+        String msgText = "To go back to the audio player, click below.";
+
+        NotificationManager notificationManager = getNotificationManager();
+        PendingIntent pi = getPendingIntent();
+        Notification.Builder builder = new Notification.Builder(this);
+        builder.setContentTitle("Talk Player Title")
+                .setContentText("Talk Player")
+                .setSmallIcon(R.drawable.ic_launcher)
+                .addAction(R.drawable.btn_play, "Back to player", pi)
+                .setAutoCancel(true);
+        Notification notification = new Notification.BigTextStyle(builder)
+                .bigText(msgText)
+                .build();
+        notificationManager.notify(0, notification);
+    }
+
+    public PendingIntent getPendingIntent() {
+        Intent intent = new Intent(this, TalkPlayerActivity.class);
+        intent.putExtra("id", talkId);
+
+        return PendingIntent.getActivity(this, 0, intent, 0);
+    }
+
+    public NotificationManager getNotificationManager() {
+        return (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
     }
 }

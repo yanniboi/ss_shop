@@ -27,7 +27,7 @@ public class TalkPlayerActivity extends ActionBarActivity implements MediaPlayer
     private TextView songCurrentDurationLabel;
     private TextView songTotalDurationLabel;
     // Media Player
-    private  MediaPlayer mp;
+    private  static MediaPlayer mp;
     // Handler to update UI timer, progress bar etc,.
     private Handler mHandler = new Handler();;
     private TalksManager talkManager;
@@ -55,22 +55,33 @@ public class TalkPlayerActivity extends ActionBarActivity implements MediaPlayer
         songCurrentDurationLabel = (TextView) findViewById(R.id.songCurrentDurationLabel);
         songTotalDurationLabel = (TextView) findViewById(R.id.songTotalDurationLabel);
 
-        // Mediaplayer
-        mp = new MediaPlayer();
         talkManager = new TalksManager(getApplicationContext());
         utils = new PlayerUtilities();
-
-        // Listeners
         songProgressBar.setOnSeekBarChangeListener(this); // Important
-        mp.setOnCompletionListener(this); // Important
-
-        // Getting all songs list
         Intent intent = getIntent();
         talkId = intent.getStringExtra("id");
 
-        songsList = talkManager.getPlayList(talkId);
+        // Mediaplayer
+        if (mp == null) {
+            mp = new MediaPlayer();
+            // Getting all songs list
+            songsList = talkManager.getPlayList(talkId);
 
-        playSong(0);
+            playSong(0);
+        }
+        else {
+            updateProgressBar();
+            songTitleLabel.setText(talkId);
+            if (mp.isPlaying()) {
+                btnPlay.setImageResource(R.drawable.btn_pause);
+            }
+        }
+
+
+        // Listeners
+        mp.setOnCompletionListener(this); // Important
+
+
 
         btnPlay.setOnClickListener(new View.OnClickListener() {
 

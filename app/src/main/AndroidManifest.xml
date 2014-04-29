@@ -18,6 +18,7 @@
         </activity>
         <activity
             android:name="com.yanniboi.soulsurvivorshop.app.TalkActivity"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:parentActivityName="com.yanniboi.soulsurvivorshop.app.MainActivity" >
         android:label="@string/app_name" >
@@ -34,6 +35,7 @@
         </activity>
         <activity
             android:name="com.yanniboi.soulsurvivorshop.app.TalkPlayerActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:label="@string/title_activity_talk_player"
             android:parentActivityName="com.yanniboi.soulsurvivorshop.app.TalkActivity" >
