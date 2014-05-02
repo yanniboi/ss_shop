@@ -64,7 +64,7 @@
             <!-- Backward Button -->
             <ImageButton
                 android:id="@+id/btnBackward"
-                android:src="@android:drawable/ic_media_rew"
+                android:src="@drawable/btn_rew"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@null"/>
@@ -78,7 +78,7 @@
             <!-- Forward Button -->
             <ImageButton
                 android:id="@+id/btnForward"
-                android:src="@android:drawable/ic_media_ff"
+                android:src="@drawable/btn_ff"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@null"/>
