@@ -27,6 +27,21 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -187,7 +202,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
     }
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
-        return email.contains("@");
+        return true;
+        //return email.contains("@");
     }
 
     private boolean isPasswordValid(String password) {
@@ -323,6 +339,10 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
         private final String mEmail;
         private final String mPassword;
 
+        private String session_name;
+        private String session_id;
+        private String user_id;
+
         UserLoginTask(String email, String password) {
             mEmail = email;
             mPassword = password;
@@ -330,25 +350,49 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
+            HttpClient client = new DefaultHttpClient();
+            HttpPost post = new HttpPost("http://six-gs.com/ssshop/android/user/login");
+
 
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
+                // Add your data
+                JSONObject json = new JSONObject();
+                json.put("username", mEmail);
+                json.put("password", mPassword);
+
+                StringEntity se = new StringEntity(json.toString());
+                se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE,"application/json"));
+                post.setEntity(se);
+
+                HttpResponse response = client.execute(post);
+
+                //read the response from Services endpoint
+                HttpEntity test = response.getEntity();
+                String jsonResponse = EntityUtils.toString(response.getEntity());
+
+                JSONObject jsonObject = new JSONObject(jsonResponse);
+                //read the session information
+                session_name = jsonObject.getString("session_name");
+                session_id = jsonObject.getString("sessid");
+                JSONObject user = jsonObject.getJSONObject("user");
+                user_id = user.getString("uid");
+
+
+            } catch (ClientProtocolException e) {
+                return false;
+                // TODO Auto-generated catch block
+            } catch (IOException e) {
+                return false;
+                // TODO Auto-generated catch block
+            } catch (JSONException e) {
+                return false;
+                // TODO Auto-generated catch block
+            }
+
+            if (session_id == "") {
                 return false;
             }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
-            return false;
+            return true;
         }
 
         @Override
@@ -361,9 +405,11 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
                 SharedPreferences.Editor sessionEdit = prefsLogin.edit();
                 sessionEdit.putString("user", mEmail);
                 sessionEdit.putString("pass", mPassword);
+                sessionEdit.putString("session_name", session_name);
+                sessionEdit.putString("session_id", session_id);
+                sessionEdit.putString("user_id", user_id);
                 sessionEdit.putBoolean("auth", true);
-                //sessionEdit.putString("session_name", session_name);
-                //sessionEdit.putString("session_id", session_id);
+
                 sessionEdit.commit();
 
                 // Restart Application.

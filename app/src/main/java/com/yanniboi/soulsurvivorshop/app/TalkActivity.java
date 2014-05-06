@@ -8,8 +8,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.PowerManager;
@@ -19,7 +17,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +35,7 @@ public class TalkActivity extends ActionBarActivity {
     String talkFileName;
     String talkId;
     static Boolean downloaded;
+    String user_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +49,10 @@ public class TalkActivity extends ActionBarActivity {
             downloaded = intent.getBooleanExtra("downloaded", false);
         }
         talkId = intent.getStringExtra("id");
+
+        // Get logged in user id.
+        SharedPreferences prefsLogin = getSharedPreferences("PREFS_LOGIN", 0);
+        user_id = prefsLogin.getString("user_id", "0");
 
         TextView tv1 = (TextView) findViewById(R.id.first);
         tv1.setText(firstLine);
@@ -82,7 +84,7 @@ public class TalkActivity extends ActionBarActivity {
                 URL url = null;
                 try {
                     //url = new URL("http://vinelife.co.uk/downloads/2014-03-30-martyn_smith.mp3");
-                    String urlString = "http://six-gs.com/ss_files/" + talkId + ".mp3";
+                    String urlString = "http://six-gs.com/ssshop/?q=system/files/mp3//" + talkId + ".mp3";
                     url = new URL(urlString);
                 } catch (MalformedURLException e) {
                     // @TODO Error handling
@@ -154,12 +156,11 @@ public class TalkActivity extends ActionBarActivity {
                 //create the new connection
                 HttpURLConnection urlConnection = (HttpURLConnection) url[0].openConnection();
 
-                //set up some things on the connection
-                urlConnection.setRequestMethod("GET");
+                urlConnection.setRequestMethod("POST");
+                urlConnection.setDoInput(true);
                 urlConnection.setDoOutput(true);
-
-                //and connect!
                 urlConnection.connect();
+                urlConnection.getOutputStream().write(("{\"uid\":\"" + user_id + "\"}").getBytes());
 
                 File SDCardRoot = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
 
