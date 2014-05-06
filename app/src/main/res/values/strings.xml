@@ -6,10 +6,18 @@
     <string name="hello_world">Welcome to the Shop on your mobile!</string>
     <string name="action_settings">Settings</string>
     <string name="action_login">Login</string>
+    <string name="action_refresh">Refresh Talks</string>
+    <string name="action_close">Close</string>
+    <string name="my_talks">See my Talks</string>
+    <string name="no_talks">Refresh my Talks</string>
+    <string name="browse_shop">Browse online shop</string>
     <string name="action_logout">Logout</string>
     <string name="action_download">Download</string>
-    <string name="email_sign_out_text">You are already signed in.</string>
+    <string name="action_delete">Delete from device</string>
+    <string name="email_sign_out_text">Are you sure you want to log out?</string>
     <string name="play_talk">Listen</string>
     <string name="title_activity_talk_player">TalkPlayerActivity</string>
+    <string name="title_activity_my_talks">MyTalksActivity</string>
+    <string name="title_activity_browse">BrowseActivity</string>
 
 </resources>

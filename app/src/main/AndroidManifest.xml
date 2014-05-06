@@ -19,8 +19,8 @@
         <activity
             android:name="com.yanniboi.soulsurvivorshop.app.TalkActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:parentActivityName="com.yanniboi.soulsurvivorshop.app.MainActivity" >
+            android:parentActivityName="com.yanniboi.soulsurvivorshop.app.MyTalksActivity"
+            android:screenOrientation="portrait" >
         android:label="@string/app_name" >
             <service
                 android:name="com.yanniboi.soulsurvivorshop.app.MyAudioService"
@@ -35,14 +35,35 @@
         </activity>
         <activity
             android:name="com.yanniboi.soulsurvivorshop.app.TalkPlayerActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
             android:label="@string/title_activity_talk_player"
-            android:parentActivityName="com.yanniboi.soulsurvivorshop.app.TalkActivity" >
+            android:launchMode="singleTask"
+            android:parentActivityName="com.yanniboi.soulsurvivorshop.app.TalkActivity"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="TalkActivity" />
         </activity>
+        <activity
+            android:name="com.yanniboi.soulsurvivorshop.app.MyTalksActivity"
+            android:label="@string/title_activity_my_talks"
+            android:parentActivityName="com.yanniboi.soulsurvivorshop.app.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="MainActivity" />
+        </activity>
+        <activity
+            android:name="com.yanniboi.soulsurvivorshop.app.BrowseActivity"
+            android:label="@string/title_activity_browse"
+            android:parentActivityName="com.yanniboi.soulsurvivorshop.app.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="MainActivity" />
+        </activity>
+
+        <service
+            android:name="com.yanniboi.soulsurvivorshop.app.StopPlayerService"
+            android:exported="false" >
+        </service>
     </application>
     <!-- To access Google+ APIs: -->
     <uses-permission android:name="android.permission.INTERNET" />

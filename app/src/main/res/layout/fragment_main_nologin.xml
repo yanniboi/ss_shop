@@ -14,20 +14,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <Button
-        android:id="@+id/fragment_no_talks"
-        android:text="@string/my_talks"
+    <TextView
+        android:id="@+id/fragment_no_login"
         android:layout_below="@id/fragment_hello"
+        android:text="@string/no_login"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:onClick="goToMyTalks"/>
-
-    <Button
-        android:id="@+id/fragment_browse"
-        android:text="@string/browse_shop"
-        android:layout_below="@id/fragment_no_talks"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:onClick="browseShop"/>
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>

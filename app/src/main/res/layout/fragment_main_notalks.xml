@@ -15,19 +15,12 @@
         android:layout_height="wrap_content" />
 
     <Button
-        android:id="@+id/fragment_no_talks"
-        android:text="@string/my_talks"
+        android:id="@+id/fragment_my_talks"
+        android:text="@string/no_talks"
         android:layout_below="@id/fragment_hello"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:onClick="goToMyTalks"/>
+        android:onClick="syncMyTalks"/>
 
-    <Button
-        android:id="@+id/fragment_browse"
-        android:text="@string/browse_shop"
-        android:layout_below="@id/fragment_no_talks"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:onClick="browseShop"/>
 
 </RelativeLayout>

@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 
 public class TalkActivity extends ActionBarActivity {
@@ -34,8 +35,13 @@ public class TalkActivity extends ActionBarActivity {
     ProgressDialog mProgressDialog;
     String talkFileName;
     String talkId;
+    String talkUri;
     static Boolean downloaded;
     String user_id;
+    String firstLine;
+    public static Notification talkNotification;
+    static NotificationManager notificationManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,12 +49,11 @@ public class TalkActivity extends ActionBarActivity {
         setContentView(R.layout.activity_talk);
 
         Intent intent = getIntent();
-        final String firstLine = intent.getStringExtra("first");
+        firstLine = intent.getStringExtra("first");
         String secondLine = intent.getStringExtra("second");
-        if (downloaded == null) {
-            downloaded = intent.getBooleanExtra("downloaded", false);
-        }
+        downloaded = intent.getBooleanExtra("downloaded", false);
         talkId = intent.getStringExtra("id");
+        talkUri = intent.getStringExtra("uri");
 
         // Get logged in user id.
         SharedPreferences prefsLogin = getSharedPreferences("PREFS_LOGIN", 0);
@@ -65,7 +70,7 @@ public class TalkActivity extends ActionBarActivity {
             public void onClick(View view) {
                 Intent i = new Intent(getApplication(), TalkPlayerActivity.class);
                 i.putExtra("id", talkId);
-                //i.putExtra("second", talks[position].secondValue);
+                i.putExtra("refresh", true);
                 startActivity(i);
                 sendNotification();
             }
@@ -75,30 +80,7 @@ public class TalkActivity extends ActionBarActivity {
         download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mProgressDialog = new ProgressDialog(TalkActivity.this);
-                mProgressDialog.setMessage("Downloading talk: " + firstLine );
-                mProgressDialog.setIndeterminate(true);
-                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                mProgressDialog.setCancelable(true);
-
-                URL url = null;
-                try {
-                    //url = new URL("http://vinelife.co.uk/downloads/2014-03-30-martyn_smith.mp3");
-                    String urlString = "http://six-gs.com/ssshop/?q=system/files/mp3//" + talkId + ".mp3";
-                    url = new URL(urlString);
-                } catch (MalformedURLException e) {
-                    // @TODO Error handling
-                }
-
-                final DownloadTalkTask downloadTask = new DownloadTalkTask(getApplicationContext());
-                downloadTask.execute(url);
-
-                mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        downloadTask.cancel(true);
-                    }
-                });
+                startDownload();
             }
         });
 
@@ -111,6 +93,52 @@ public class TalkActivity extends ActionBarActivity {
 
 
     }
+
+    /**
+     * Initiates progress dialog and starts download task.
+     */
+    private void startDownload() {
+        mProgressDialog = new ProgressDialog(TalkActivity.this);
+        mProgressDialog.setMessage("Downloading talk: " + firstLine );
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mProgressDialog.setCancelable(true);
+
+        URL url = null;
+        try {
+            String path = talkUri.split("private://")[1];
+
+            //url = new URL("http://vinelife.co.uk/downloads/2014-03-30-martyn_smith.mp3");
+            String urlString = "http://shop.soulsurvivor.com/?q=system/files/" + path;
+            url = new URL(urlString);
+        } catch (MalformedURLException e) {
+            // @TODO Error handling
+        }
+
+        final DownloadTalkTask downloadTask = new DownloadTalkTask(getApplicationContext());
+        downloadTask.execute(url);
+
+        mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                downloadTask.cancel(true);
+            }
+        });
+    }
+
+    private void deleteTalk() {
+        File home = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+
+        // Check file names and delte.
+        File[] files = home.listFiles();
+        for (File file : files) {
+            if (file.getName().contains(talkId)) {
+                file.delete();
+                break;
+            }
+        }
+    }
+
 
 
     @Override
@@ -128,6 +156,15 @@ public class TalkActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            startDownload();
+            return true;
+        }
+        if (id == R.id.action_delete) {
+            deleteTalk();
+            Intent intent = getIntent();
+            intent.putExtra("downloaded", false);
+            finish();
+            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -191,7 +228,8 @@ public class TalkActivity extends ActionBarActivity {
                     //add up the size so we know how much is downloaded
                     downloadedSize += bufferLength;
                     //this is where you would do something to report the prgress, like this maybe
-                    publishProgress((int) (downloadedSize * 100 / totalSize));
+                    //final int progress = (int) ((((double) downloadedSize) / totalSize)  * 100);
+                    publishProgress((int) ((((double) downloadedSize) / totalSize)  * 100));
                     //updateProgress(downloadedSize, totalSize);
 
                 }
@@ -242,9 +280,9 @@ public class TalkActivity extends ActionBarActivity {
                 sessionEdit.putBoolean(talkFileName, true);
                 sessionEdit.commit();*/
 
-                downloaded = true;
                 Toast.makeText(context,"File downloaded", Toast.LENGTH_SHORT).show();
                 Intent intent = getIntent();
+                intent.putExtra("downloaded", true);
                 finish();
                 startActivity(intent);
             } else {
@@ -257,25 +295,44 @@ public class TalkActivity extends ActionBarActivity {
     public void sendNotification() {
         String msgText = "To go back to the audio player, click below.";
 
-        NotificationManager notificationManager = getNotificationManager();
-        PendingIntent pi = getPendingIntent();
+        if (talkNotification != null) {
+            Intent intent = new Intent(this, StopPlayerService.class);
+            intent.setAction("com.yanniboi.soulsurvivorshop.app.action.STOP");
+            intent.putExtra("com.yanniboi.soulsurvivorshop.app.extra.TALK", talkId);
+            startService(intent);
+            notificationManager.cancelAll();
+        }
+        notificationManager = getNotificationManager();
+        PendingIntent piAction = getPendingIntentAction();
+        PendingIntent piDelete = getPendingIntentDelete();
         Notification.Builder builder = new Notification.Builder(this);
         builder.setContentTitle("Talk Player Title")
                 .setContentText("Talk Player")
                 .setSmallIcon(R.drawable.ic_launcher)
-                .addAction(R.drawable.btn_play, "Back to player", pi)
-                .setAutoCancel(true);
-        Notification notification = new Notification.BigTextStyle(builder)
+                .addAction(R.drawable.btn_play, "Back to player", piAction)
+                .setAutoCancel(true)
+                .setDeleteIntent(piDelete);
+
+
+        talkNotification = new Notification.BigTextStyle(builder)
                 .bigText(msgText)
                 .build();
-        notificationManager.notify(0, notification);
+        notificationManager.notify(0, talkNotification);
     }
 
-    public PendingIntent getPendingIntent() {
+    public PendingIntent getPendingIntentAction() {
         Intent intent = new Intent(this, TalkPlayerActivity.class);
         intent.putExtra("id", talkId);
 
         return PendingIntent.getActivity(this, 0, intent, 0);
+    }
+
+    public PendingIntent getPendingIntentDelete() {
+        Intent intent = new Intent(this, StopPlayerService.class);
+        intent.setAction("com.yanniboi.soulsurvivorshop.app.action.STOP");
+        intent.putExtra("com.yanniboi.soulsurvivorshop.app.extra.TALK", talkId);
+
+        return PendingIntent.getService(this, 0, intent, 0);
     }
 
     public NotificationManager getNotificationManager() {

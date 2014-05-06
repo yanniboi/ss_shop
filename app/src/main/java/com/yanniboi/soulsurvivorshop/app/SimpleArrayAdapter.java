@@ -13,10 +13,10 @@ import java.util.List;
 
 public class SimpleArrayAdapter extends ArrayAdapter<Talks.Talk> {
     private final Context context;
-    private final Talks.Talk[] talks;
+    private final List<Talks.Talk> talks;
 
 
-    public SimpleArrayAdapter(Context context, Talks.Talk[] talks) {
+    public SimpleArrayAdapter(Context context, List<Talks.Talk> talks) {
         super(context, R.layout.list_item, talks);
         this.context = context;
         this.talks = talks;
@@ -30,10 +30,11 @@ public class SimpleArrayAdapter extends ArrayAdapter<Talks.Talk> {
         TextView firstTextView = (TextView) rowView.findViewById(R.id.firstLine);
         TextView secondTextView = (TextView) rowView.findViewById(R.id.secondLine);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
-        firstTextView.setText(talks[position].firstValue);
-        secondTextView.setText(talks[position].secondValue);
-        // change the icon for Windows and iPhone
-        Boolean downloaded = talks[position].downloadValue;
+        firstTextView.setText(talks.get(position).firstValue);
+        secondTextView.setText(talks.get(position).secondValue);
+
+        // change the icon for Downloaded or not.
+        Boolean downloaded = talks.get(position).downloadValue;
         if (downloaded) {
             imageView.setImageResource(R.drawable.ok);
         } else {

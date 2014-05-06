@@ -1,5 +1,6 @@
 package com.yanniboi.soulsurvivorshop.app;
 
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Handler;
@@ -40,6 +41,7 @@ public class TalkPlayerActivity extends ActionBarActivity implements MediaPlayer
     private ArrayList<HashMap<String, String>> songsList = new ArrayList<HashMap<String, String>>();
 
     private String talkId;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,11 +60,12 @@ public class TalkPlayerActivity extends ActionBarActivity implements MediaPlayer
         talkManager = new TalksManager(getApplicationContext());
         utils = new PlayerUtilities();
         songProgressBar.setOnSeekBarChangeListener(this); // Important
-        Intent intent = getIntent();
+        intent = getIntent();
         talkId = intent.getStringExtra("id");
+        Boolean refresh = intent.getBooleanExtra("refresh", false);
 
         // Mediaplayer
-        if (mp == null) {
+        if (mp == null || refresh) {
             mp = new MediaPlayer();
             // Getting all songs list
             songsList = talkManager.getPlayList(talkId);
@@ -142,6 +145,22 @@ public class TalkPlayerActivity extends ActionBarActivity implements MediaPlayer
         });
     }
 
+    @Override
+    protected void onResume() {
+        /*intent = getIntent();
+
+        if (!mp.isPlaying() && intent.getBooleanExtra("refresh", false)) {
+            mp.stop();
+            mp.reset();
+            mp = new MediaPlayer();
+            // Getting all songs list
+            songsList = talkManager.getPlayList(talkId);
+
+            playSong(0);
+        }*/
+
+        super.onResume();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -157,10 +176,33 @@ public class TalkPlayerActivity extends ActionBarActivity implements MediaPlayer
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_close) {
+            stopPlayer();
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Stop playing a talk.
+     */
+    protected void stopPlayer() {
+        mp.stop();
+        mp.reset();
+
+        Intent i = new Intent(getApplication(), MyTalksActivity.class);
+        startActivity(i);
+        finish();
+    }
+
+    /**
+     * Stop playing a talk.
+     */
+    protected static void notificationStopPlayer() {
+        mp.stop();
+        int end = mp.getDuration();
+        mp.seekTo(end);
+        mp.reset();
     }
 
     /**
@@ -185,7 +227,6 @@ public class TalkPlayerActivity extends ActionBarActivity implements MediaPlayer
 
             // Updating progress bar
             int progress = (int)(utils.getProgressPercentage(currentDuration, totalDuration));
-            //Log.d("Progress", ""+progress);
             songProgressBar.setProgress(progress);
 
             // Running this thread after 100 milliseconds
@@ -195,7 +236,7 @@ public class TalkPlayerActivity extends ActionBarActivity implements MediaPlayer
 
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
-
+        finish();
     }
 
     @Override

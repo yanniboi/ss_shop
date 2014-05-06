@@ -53,13 +53,6 @@ import java.util.List;
 public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
 
     /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "admin@:admin", "bar@example.com:world"
-    };
-    /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private UserLoginTask mAuthTask = null;
@@ -351,7 +344,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
         @Override
         protected Boolean doInBackground(Void... params) {
             HttpClient client = new DefaultHttpClient();
-            HttpPost post = new HttpPost("http://six-gs.com/ssshop/android/user/login");
+            HttpPost post = new HttpPost("http://shop.soulsurvivor.com/android/user/login");
 
 
             try {
