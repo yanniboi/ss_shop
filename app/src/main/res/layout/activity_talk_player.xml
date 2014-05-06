@@ -61,6 +61,18 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:gravity="center">
+
+            <!-- Current Duration Label -->
+            <TextView
+                android:id="@+id/songCurrentDurationLabel"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:textColor="#eeeeee"
+                android:textStyle="bold"
+                android:layout_marginLeft="20dp" />
+
             <!-- Backward Button -->
             <ImageButton
                 android:id="@+id/btnBackward"
@@ -82,6 +94,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@null"/>
+
+            <!-- Total Duration Label -->
+            <TextView
+                android:id="@+id/songTotalDurationLabel"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:textColor="#04cbde"
+                android:textStyle="bold"
+                android:layout_marginRight="20dp" />
+
         </LinearLayout>
     </LinearLayout>
 
@@ -92,40 +116,12 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="10dp"
         android:layout_above="@id/player_footer_bg"
         android:thumb="@drawable/seek_handler"
         android:progressDrawable="@drawable/seekbar_progress"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"/>
 
-    <!-- Timer Display -->
-    <LinearLayout
-        android:id="@+id/timerDisplay"
-        android:layout_above="@id/songProgressBar"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginBottom="10dp">
-        <!-- Current Duration Label -->
-        <TextView
-            android:id="@+id/songCurrentDurationLabel"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="left"
-            android:textColor="#eeeeee"
-            android:textStyle="bold"/>
-        <!-- Total Duration Label -->
-        <TextView
-            android:id="@+id/songTotalDurationLabel"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="right"
-            android:textColor="#04cbde"
-            android:textStyle="bold"/>
-    </LinearLayout>
 
 </RelativeLayout>
